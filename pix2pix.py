@@ -30,17 +30,18 @@ parser.add_argument("--direction", type=str, default="rl", choices=["lr", "rl"],
 args = parser.parse_args()
 
 class Dataset(data.Dataset):
-    def __init__(self, image_dir):
+    def __init__(self, image_dir, labels_dir):
         super(Dataset, self).__init__()
         # self.path = image_dir
         self.input_filenames = glob.glob(os.path.join(image_dir, "*.jpg"))
+        self.label_filenames = glob.glob(os.path.join(labels_dir, "*.jpg"))
 
     def __getitem__(self, index):
         # Load Image
         img = np.transpose(imread(self.input_filenames[index]), (2,0,1)).astype(np.float32) / 255.0
-        width = img.shape[2]
-        left = torch.from_numpy(img[:, :, :width//2])
-        right = torch.from_numpy(img[:, :, width//2:])
+        label = np.transpose(imread(self.label_filenames[index]), (2,0,1)).astype(np.float32) / 255.0
+        left = torch.from_numpy(img)
+        right = torch.from_numpy(label)
 
         return left, right
 
