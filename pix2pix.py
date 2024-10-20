@@ -88,6 +88,8 @@ test_set = Dataset(args.test_dir)
 testing_data_loader = data.DataLoader(dataset=test_set, batch_size=args.batch_size, shuffle=False)
 
 def train(epoch):
+    avg_psnr = 0
+    avg_ssim = 0
     for batch, (left, right) in enumerate(training_data_loader):
         if args.direction == 'lr':
             input.data.resize_(left.size()).copy_(left)
@@ -124,6 +126,11 @@ def train(epoch):
         G_loss = F.binary_cross_entropy(D_fake, ones_label) + 100 * F.smooth_l1_loss(G_fake, target)
         G_loss.backward()
         G_solver.step()
+        im_true = np.transpose(target.data.cpu().numpy(), (0, 2, 3, 1))
+        im_test = np.transpose(G_fake.data.cpu().numpy(), (0, 2, 3, 1))
+        for i in range(input.size(0)):
+            avg_psnr += psnr(im_true[i], im_test[i])
+            avg_ssim += (ssim(im_true[i,:,:,0], im_test[i,:,:,0]) + ssim(im_true[i,:,:,1], im_test[i,:,:,1]) + ssim(im_true[i,:,:,2], im_test[i,:,:,2])) / 3
 
         ## debug
         if (batch + 1) % 100 == 0:
@@ -155,7 +162,7 @@ def test(epoch):
 def main():
     for epoch in range(1, args.max_epochs + 1):
         train(epoch)
-        test(epoch)
+       # test(epoch)
         if not os.path.exists("checkpoint"):
             os.mkdir("checkpoint")
         if epoch % 10 == 0:
