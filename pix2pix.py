@@ -160,7 +160,10 @@ def test(epoch):
         im_test = np.transpose(prediction.data.cpu().numpy(), (0, 2, 3, 1))
         for i in range(input.size(0)):
             avg_psnr += psnr(im_true[i], im_test[i])
-            avg_ssim += (ssim(im_true[i,:,:,0], im_test[i,:,:,0]) + ssim(im_true[i,:,:,1], im_test[i,:,:,1]) + ssim(im_true[i,:,:,2], im_test[i,:,:,2])) / 3
+            avg_ssim += (ssim(im_true[i,:,:,0], im_test[i,:,:,0], data_range=1.0) +
+             ssim(im_true[i,:,:,1], im_test[i,:,:,1], data_range=1.0) +
+             ssim(im_true[i,:,:,2], im_test[i,:,:,2], data_range=1.0)) / 3
+
     print("[TEST]  PSNR: {:.4f}; SSIM: {:.4f}".format(avg_psnr / len(test_set), avg_ssim / len(test_set)))
 
 
