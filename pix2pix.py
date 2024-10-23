@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from imageio import imread
+from imageio.v2 import imread
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
@@ -59,8 +59,7 @@ netD.apply(weights_init)
 
 input = torch.FloatTensor(args.batch_size, 3, 256, 256)
 target = torch.FloatTensor(args.batch_size, 3, 256, 256)
-ones_label = torch.ones(args.batch_size)
-zeros_label = torch.zeros(args.batch_size)
+
 
 # move to gpu
 if args.cuda:
@@ -68,14 +67,14 @@ if args.cuda:
     netG = netG.cuda()
     input = input.cuda()
     target = target.cuda()
-    ones_label = ones_label.cuda()
-    zeros_label = zeros_label.cuda()
+    # ones_label = ones_label.cuda()
+    # zeros_label = zeros_label.cuda()
 
 # convert to Variable
 input = Variable(input)
 target = Variable(target)
-ones_label = Variable(ones_label)
-zeros_label = Variable(zeros_label)
+# ones_label = Variable(ones_label)
+# zeros_label = Variable(zeros_label)
 
 # optimizer
 D_solver = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
@@ -106,8 +105,8 @@ def train(epoch):
         netD.zero_grad()
         # real
         D_real = netD(input, target)
-        ones_label.data.resize_(D_real.size()).fill_(1)
-        zeros_label.data.resize_(D_real.size()).fill_(0)
+        ones_label = torch.ones_like(D_real)
+        zeros_label = torch.zeros_like(D_real)
         D_loss_real = F.binary_cross_entropy(D_real, ones_label)
         D_x_y = D_real.data.mean()
 
