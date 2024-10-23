@@ -33,8 +33,8 @@ class Dataset(data.Dataset):
     def __init__(self, image_dir, labels_dir):
         super(Dataset, self).__init__()
         # self.path = image_dir
-        self.input_filenames = glob.glob(os.path.join(image_dir, "*.jpg"))
-        self.label_filenames = glob.glob(os.path.join(labels_dir, "*.jpg"))
+        self.input_filenames = glob.glob(os.path.join(image_dir, "*.png"))
+        self.label_filenames = glob.glob(os.path.join(labels_dir, "*.png"))
 
     def __getitem__(self, index):
         # Load Image
