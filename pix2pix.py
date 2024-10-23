@@ -59,8 +59,8 @@ netG.apply(weights_init)
 netD = _netD(input_nc=3, target_nc=3, ndf=64)
 netD.apply(weights_init)
 
-input = torch.FloatTensor(args.batch_size, 3, 1080, 1920)
-target = torch.FloatTensor(args.batch_size, 3, 1080, 1920)
+input = torch.FloatTensor(args.batch_size, 3, 256, 256)
+target = torch.FloatTensor(args.batch_size, 3, 256, 256)
 
 
 # move to gpu
