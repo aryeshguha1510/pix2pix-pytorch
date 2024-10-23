@@ -2,10 +2,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from scipy.misc import imread
+from imageio import imread
 import numpy as np
-from skimage.measure import structural_similarity as ssim
-from skimage.measure import peak_signal_noise_ratio as psnr
+from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 
 import argparse
 import glob
