@@ -4,8 +4,10 @@ from __future__ import print_function
 
 from imageio.v2 import imread
 import numpy as np
-from skimage.metrics import structural_similarity as ssim
-from skimage.metrics import peak_signal_noise_ratio as psnr
+# from skimage.metrics import structural_similarity as ssim
+# from skimage.metrics import peak_signal_noise_ratio as psnr
+from torchmetrics import StructuralSimilarityIndexMeasure as ssim
+from torchmetrics import PeakSignalNoiseRatio as psnr
 
 import argparse
 import glob
