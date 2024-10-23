@@ -4,8 +4,8 @@ from __future__ import print_function
 
 from scipy.misc import imread
 import numpy as np
-from skimage.measure import compare_ssim as ssim
-from skimage.measure import compare_psnr as psnr
+from skimage.measure import structural_similarity as ssim
+from skimage.measure import peak_signal_noise_ratio as psnr
 
 import argparse
 import glob
@@ -20,12 +20,12 @@ import torch.utils.data as data
 from torch.autograd import Variable
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--train_dir", help="path to folder containing training images")
-parser.add_argument("--test_dir", help="path to folder containing testing images")
+parser.add_argument("--train_dir", help="path to folder containing training set")
+parser.add_argument("--test_dir", help="path to folder containing testing set")
 parser.add_argument("--max_epochs", type=int, default=1, help="number of training epochs")
 parser.add_argument('--cuda', action='store_true', default=True, help='enables cuda')
 parser.add_argument('--batch_size', type=int, default=1, help='training batch size')
-parser.add_argument("--direction", type=str, default="rl", choices=["lr", "rl"], help="which direction")
+parser.add_argument("--direction", type=str, default="lr", choices=["lr", "rl"], help="which direction")
 
 args = parser.parse_args()
 
@@ -82,9 +82,13 @@ D_solver = optim.Adam(netD.parameters(), lr=0.0002, betas=(0.5, 0.999))
 G_solver = optim.Adam(netG.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
 # load data
-train_set = Dataset(args.train_dir)
+train_images_dir = os.path.join(args.train_dir,"banded")
+train_labels_dir = os.path.join(args.train_dir,"pristine")
+test_images_dir = os.path.join(args.test_dir,"banded")
+test_labels_dir = os.path.join(args.test_dir,"pristine")
+train_set = Dataset(train_images_dir,train_labels_dir)
 training_data_loader = data.DataLoader(dataset=train_set, batch_size=args.batch_size, shuffle=True)
-test_set = Dataset(args.test_dir)
+test_set = Dataset(test_images_dir, test_labels_dir)
 testing_data_loader = data.DataLoader(dataset=test_set, batch_size=args.batch_size, shuffle=False)
 
 def train(epoch):
@@ -162,7 +166,7 @@ def test(epoch):
 def main():
     for epoch in range(1, args.max_epochs + 1):
         train(epoch)
-       # test(epoch)
+        #test(epoch)
         if not os.path.exists("checkpoint"):
             os.mkdir("checkpoint")
         if epoch % 10 == 0:
