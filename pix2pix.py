@@ -135,7 +135,9 @@ def train(epoch):
         im_test = np.transpose(G_fake.data.cpu().numpy(), (0, 2, 3, 1))
         for i in range(input.size(0)):
             avg_psnr += psnr(im_true[i], im_test[i])
-            avg_ssim += (ssim(im_true[i,:,:,0], im_test[i,:,:,0]) + ssim(im_true[i,:,:,1], im_test[i,:,:,1]) + ssim(im_true[i,:,:,2], im_test[i,:,:,2])) / 3
+            avg_ssim += (ssim(im_true[i,:,:,0], im_test[i,:,:,0], data_range=1.0) +
+             ssim(im_true[i,:,:,1], im_test[i,:,:,1], data_range=1.0) +
+             ssim(im_true[i,:,:,2], im_test[i,:,:,2], data_range=1.0)) / 3
 
         ## debug
         if (batch + 1) % 100 == 0:
